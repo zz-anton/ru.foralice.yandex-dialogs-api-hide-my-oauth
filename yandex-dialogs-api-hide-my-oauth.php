@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // hideMyOauth - скрипт для работы сервиса https://imgAdmin.forAlice.ru с безопасным 
 // использованием конфиденциального идентификатора OAuth пользователя.
@@ -13,7 +13,7 @@
 //
 //
 // Укажите Ваш OAuth здесь
-$OAUTH = 'xxxхххххххххххххххххххххххххх';
+$OAUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 
 
 
@@ -36,24 +36,8 @@ function prepareRequestParam( $param, $exceptKeys = null ){
 	} else 
 	if ( gettype( $param ) === 'array' ) {
 		$result = null;
-		foreach( $param as $key1 => $value1 ){
-			
-			if ( is_array( $exceptKeys ) && in_array( $key1, $exceptKeys ) ) {
-				$result[ $key1 ] = $value1;
-			} else {
-				if ( gettype( $value1 ) === 'array' ) {
-					
-					foreach( $value1 as $key2 => $value2 ){
-						if ( is_array( $exceptKeys ) && in_array( $key2, $exceptKeys ) ) {
-							$result[ strip_tags( $key1 ) ][ $key2 ] = $value2;
-						} else {
-							$result[ strip_tags( $key1 ) ][ strip_tags( $key2 ) ] = strip_tags( $value2 );
-						}
-					}
-				} else {
-					$result[ strip_tags( $key1 ) ] = strip_tags( $value1 );
-				}
-			}
+		foreach( $param as $key => $value ){
+			$result[ strip_tags( $key ) ] = strip_tags( $value );
 		}
 	} 
 	
@@ -66,7 +50,6 @@ function prepareRequestParam( $param, $exceptKeys = null ){
 function getValueFromArrayByKey( $arr, $key, $def ){
 	if ( empty( $arr ) ) return $def;
 	if ( !isset( $arr[ $key ] ) ) return $def;
-	//if ( empty( $arr[ $key ] ) ) return $def;
 	if ( $arr[ $key ] === null ) return $def;
 	
 	return $arr[ $key ];
