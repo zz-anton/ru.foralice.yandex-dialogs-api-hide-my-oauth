@@ -1,25 +1,40 @@
-﻿<?php
-
+<?php
 // hideMyOauth - скрипт для работы сервиса https://imgAdmin.forAlice.ru с безопасным 
 // использованием конфиденциального идентификатора OAuth пользователя.
 // Антон Г. Федерольф (zz-anton@yandex.ru)
 // Релиз от: 2019-04-03
 //
 //
+//
 // Установка:
 // - укажите Ваш OAuth в строках ниже;
-// - опубликуйте данный скрипт в интернете;
-// - укажите URL этого скрипта в сервисе https://imgAdmin.forAlice.ru в поле OAuth.
+// - разместите php-скрипт на доверенной площадке и опубликуйте сервис в интернете.
+//   * В текущей версии, необходимо чтобы у скрипта были права на создание папок и 
+//     файлов в его директории. Это необходимо для работы с файлами добавляемыми в 
+//     Яндекс.Диалоги. В последующих версиях данная необходимость будет устранена;
+// - укажите URL опубликованного скрипта в сервисе https://imgAdmin.forAlice.ru в 
+//   поле OAuth.
 //
+//
+//
+// НАСТРОЙКА
 //
 // Укажите Ваш OAuth здесь
-$OAUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+$OAUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+//
+// Следующий параметр необходим для ведения единой библиотеки изображений ImgAdmin
+// при использовании различных методов авторизации (через OAuth или этот скрипт).
+// Если Вы не планируете в будущем авторизоваться в ImgAdmin по OAuth можете 
+// выставить следующий параметр в null.
+$HIDDEN_OAUTH = md5( $OAUTH );
+//$HIDDEN_OAUTH = null;
 
 
 
 //ini_set('xdebug.var_display_max_depth', '10');
 //ini_set('xdebug.var_display_max_children', '256');
 //ini_set('xdebug.var_display_max_data', '1024');
+
 
 
 // common
@@ -82,6 +97,12 @@ $request = prepareRequestParam( $_REQUEST );
 $action  = getValueFromArrayByKey( $request, 'action' , null );
 if ( empty( $action ) ) exitWithAnswer( 'Неверные параметры' );
 
+if ( $action === 'getHiddenOauth' ){
+	$result = (Object) array();
+	$result->result = true;
+	if ( !empty( $HIDDEN_OAUTH ) ) $result->ho20190405 = $HIDDEN_OAUTH;
+	exitWithJsonAnswer( $result );
+} else
 if ( $action === 'checkQuota' ){
 	try{
 		$ch = curl_init();
