@@ -2,7 +2,7 @@
 // hideMyOauth - скрипт для работы сервиса https://imgAdmin.forAlice.ru с безопасным 
 // использованием конфиденциального идентификатора OAuth пользователя.
 // Антон Г. Федерольф (zz-anton@yandex.ru)
-// Релиз от: 2019-04-03
+// Релиз от: 2019-04-08
 //
 //
 //
@@ -40,8 +40,38 @@ $HIDDEN_OAUTH = md5( $OAUTH );
 // common
 //
 /**
+ * пользовательская функция для обработки ошибок
+ */
+function userErrorHandler( $errno, $errmsg, $filename, $linenum ){
+	$errortype = array (
+				E_ERROR              => 'E_ERROR',
+				E_WARNING            => 'E_WARNING',
+				E_PARSE              => 'E_PARSE',
+				E_NOTICE             => 'E_NOTICE',
+				E_CORE_ERROR         => 'E_CORE_ERROR',
+				E_CORE_WARNING       => 'E_CORE_WARNING',
+				E_COMPILE_ERROR      => 'E_COMPILE_ERROR',
+				E_COMPILE_WARNING    => 'E_COMPILE_WARNING',
+				E_USER_ERROR         => 'E_USER_ERROR',
+				E_USER_WARNING       => 'E_USER_WARNING',
+				E_USER_NOTICE        => 'E_USER_NOTICE',
+				E_STRICT             => 'E_STRICT',
+				E_RECOVERABLE_ERROR  => 'E_RECOVERABLE_ERROR'
+				);
+	$err = (isset($errortype[$errno])?$errortype[$errno]:$errno).(!empty($errmsg)?('; '.$errmsg):'').(!empty($linenum)?('; at line: '.$linenum):'');
+	
+	error_log( $err, 0 );
+	
+	// прерываем работу только по ошибке
+	if ( in_array( $errno, array( E_ERROR, E_USER_ERROR ) ) || empty( $_REQUEST ) ){
+		exitWithAnswer( $err );
+	}
+}
+error_reporting( E_ALL );
+set_error_handler( 'userErrorHandler' );
+
+/**
  * Возвращает вычищенное значение входного параметра
- * 
  */
 function prepareRequestParam( $param, $exceptKeys = null ){
 	$result = $param;
@@ -59,7 +89,6 @@ function prepareRequestParam( $param, $exceptKeys = null ){
 	return $result;
 }
 /**
- * 
  * Возвращает значение массива
  */
 function getValueFromArrayByKey( $arr, $key, $def ){
@@ -71,19 +100,16 @@ function getValueFromArrayByKey( $arr, $key, $def ){
 }
 /**
  * Возвращает результат выполнения (JSON)
- * 
  */
 function exitWithJsonAnswer( $inData ){
 	exit( json_encode( $inData ) );
 }
 /**
  * Возвращает результат выполнения
- * 
  */
 function exitWithAnswer( $inData ){
 	exit( $inData );
 }
-
 
 
 // body
@@ -91,8 +117,8 @@ function exitWithAnswer( $inData ){
 if ( !isset( $OAUTH ) || empty( $OAUTH ) ) exitWithAnswer( 'OAuth не определён. Укажите код в первых строках скаченного файла (clientBack.php)' );
 
 
-
 $request = prepareRequestParam( $_REQUEST );
+if ( empty( $request ) ) exitWithAnswer( 'Готов к работе' );
 
 $action  = getValueFromArrayByKey( $request, 'action' , null );
 if ( empty( $action ) ) exitWithAnswer( 'Неверные параметры' );
