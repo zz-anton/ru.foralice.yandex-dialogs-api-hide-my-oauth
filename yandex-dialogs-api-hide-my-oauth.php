@@ -2,7 +2,7 @@
 // hideMyOauth - скрипт для работы сервиса https://imgAdmin.forAlice.ru с безопасным 
 // использованием конфиденциального идентификатора OAuth пользователя.
 // Антон Г. Федерольф (zz-anton@yandex.ru)
-// Релиз от: 2019-04-08
+// Релиз от: 2019-04-11
 //
 //
 //
@@ -20,7 +20,7 @@
 // НАСТРОЙКА
 //
 // Укажите Ваш OAuth здесь
-$OAUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+$OAUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 //
 // Следующий параметр необходим для ведения единой библиотеки изображений ImgAdmin
 // при использовании различных методов авторизации (через OAuth или этот скрипт).
@@ -73,7 +73,7 @@ set_error_handler( 'userErrorHandler' );
 /**
  * Возвращает вычищенное значение входного параметра
  */
-function prepareRequestParam( $param, $exceptKeys = null ){
+function prepareRequestParam( $param ){
 	$result = $param;
 	
 	if ( gettype( $param ) === 'string' ) {
@@ -114,7 +114,7 @@ function exitWithAnswer( $inData ){
 
 // body
 //
-if ( !isset( $OAUTH ) || empty( $OAUTH ) ) exitWithAnswer( 'OAuth не определён. Укажите код в первых строках скаченного файла (clientBack.php)' );
+if ( !isset( $OAUTH ) || empty( $OAUTH ) ) exitWithAnswer( 'OAuth не определён. Укажите OAuth в первых строках этого файла (блок НАСТРОЙКА)' );
 
 
 $request = prepareRequestParam( $_REQUEST );
