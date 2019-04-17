@@ -139,6 +139,7 @@ if ( $action === 'checkQuota' ){
 		
 		$response = curl_exec( $ch );
 		curl_close( $ch );
+		sleep(1);
 		
 		if ( $response === false ) throw new Exception( 'Не удалось получить ответ от сервера Яндекс.Диалоги', E_ERROR );
 		if ( empty( $response ) ) throw new Exception( 'Ответ сервера Яндекс.Диалоги пуст', E_ERROR );
