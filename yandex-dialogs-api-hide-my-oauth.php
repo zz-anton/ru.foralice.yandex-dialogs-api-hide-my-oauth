@@ -117,7 +117,7 @@ function exitWithAnswer( $inData ){
 if ( !isset( $OAUTH ) || empty( $OAUTH ) ) exitWithAnswer( 'OAuth не определён. Укажите OAuth в первых строках этого файла (блок НАСТРОЙКА)' );
 
 
-$request = prepareRequestParam( $_REQUEST );
+$request = prepareRequestParam( $_POST );
 if ( empty( $request ) ) exitWithAnswer( 'Готов к работе' );
 
 $action  = getValueFromArrayByKey( $request, 'action' , null );
